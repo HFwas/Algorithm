@@ -1,12 +1,11 @@
 package com.mj;
 
 @SuppressWarnings("unchecked")
-public class ArrayList<E> {
+public class ArrayList<E> extends AbstractList<E>{
 	private int size;		// 元素的数量	
 	private E[] elements; 	// 所有的元素
 
 	private static final int DEFAULT_CAPACITY = 10; // 初始容量
-	private static final int ELEMENT_NOT_FOUND = -1;
 	
 	public ArrayList(int capacity) { // 容量小于10一律扩充为10
 		capacity = (capacity < DEFAULT_CAPACITY) ? DEFAULT_CAPACITY : capacity;
@@ -14,28 +13,6 @@ public class ArrayList<E> {
 	}
 	public ArrayList(){
 		this(DEFAULT_CAPACITY);
-	}
-	/**
-	 * 元素的数量
-	 * @return
-	 */
-	public int size(){
-		return size;
-	}
-	/**
-	 * 是否为空
-	 * @return
-	 */
-	public boolean isEmpty(){
-		return size == 0;
-	}
-	/**
-	 * 是否包含某个元素
-	 * @param element
-	 * @return
-	 */
-	public boolean contains(E element){
-		return indexOf(element) != ELEMENT_NOT_FOUND; // 找的到该元素则返回True
 	}
 	/**
 	 * 在index位置插入一个元素
@@ -56,12 +33,6 @@ public class ArrayList<E> {
 		}
 		elements[index] = element; // 复制
 		size++;
-	}
-	/**
-	 * 添加元素到数组最后
-	 */
-	public void add(E element){
-		add(size, element);
 	}
 	/**
 	 * 获取index位置的元素
@@ -119,12 +90,6 @@ public class ArrayList<E> {
 	 * @return
 	 */
 	public int indexOf(E element){
-		/*
-		// 不对 null 进行处理也可以，但是健壮性不够
-		for (int i = 0; i < size; i++) {
-			if(elements[i].equals(element)) return i;
-		}
-		 */
 		if(element == null){ // 对 null 进行处理
 			for (int i = 0; i < size; i++) {
 				if(elements[i] == null) return i;
@@ -160,23 +125,6 @@ public class ArrayList<E> {
 		}
 		elements = newElements;
 		System.out.println("size="+oldCapacity+", 扩容到了"+newCapacity);
-	}
-	/****************封装好的功能函数**************************/
-	// 下标越界抛出的异常
-	private void outOfBounds(int index) {
-		throw new IndexOutOfBoundsException("Index:" + index + ", Size:" + size);
-	}
-	// 检查下标越界(不可访问或删除size位置)
-	private void rangeCheck(int index){
-		if(index < 0 || index >= size){
-			outOfBounds(index);
-		}
-	}
-	// 检查add()的下标越界(可以在size位置添加元素)
-	private void rangeCheckForAdd(int index) {
-		if (index < 0 || index > size) {
-			outOfBounds(index);
-		}
 	}
 	/****************封装好的功能函数***************************/
 	@Override

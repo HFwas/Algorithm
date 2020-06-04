@@ -1,5 +1,7 @@
 package com.mj;
 
+import com.mj.circle.SingleCircleLinkedList;
+
 public class Main {
 	
 	static void testList(List<Integer> list) {
@@ -26,8 +28,11 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		testList(new ArrayList<>());
-		testList(new LinkedList<>());
+		
+		testList(new SingleCircleLinkedList<>());
+		
+		/*testList(new ArrayList<>());
+		testList(new LinkedList<>());*/
 		
 		//List<Object> list = new ArrayList2<>();
 		/*list.add(10);

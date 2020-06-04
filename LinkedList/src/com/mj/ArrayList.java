@@ -21,8 +21,12 @@ public class ArrayList<E> extends AbstractList<E>{
 	public void add(int index, E element){ //size是数据规模，O(n)
 		rangeCheckForAdd(index); // 检查下标越界
 		ensureCapacity(size + 1); // 确保容量够大
-		for (int i = size - 1; i > index; i--) {
+		/*这个有问题
+		 * for (int i = size - 1; i > index; i--) {
 			elements[i + 1] = elements[i];
+		}*/
+		for (int i = size; i > index; i--) {
+			elements[i] = elements[i-1];
 		}
 		elements[index] = element; // 复制
 		size++;

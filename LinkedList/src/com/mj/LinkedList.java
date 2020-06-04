@@ -1,17 +1,37 @@
 package com.mj;
 
-import com.sun.javafx.sg.prism.NGShape.Mode;
-
+//双向链表
 public class LinkedList<E> extends AbstractList<E> {
 	private Node<E> first;
+	private Node<E> last;
 
 	private static class Node<E> {
 		E element;
+		Node<E> prev;
 		Node<E> next;
 
-		public Node(E element, Node<E> next) {
+		public Node(Node<E> prev, E element, Node<E> next) {
+			this.prev = prev;
 			this.element = element;
 			this.next = next;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			if (prev != null) {
+				sb.append(prev.element);
+			} else {
+				sb.append("null");
+			}
+			sb.append("_").append(element).append("_");
+			if (next != null) {
+				sb.append(next.element);
+			} else {
+				sb.append("null");
+			}
+
+			return sb.toString();
 		}
 	}
 
@@ -19,6 +39,7 @@ public class LinkedList<E> extends AbstractList<E> {
 	public void clear() {
 		size = 0;
 		first = null;
+		last = null;
 	}
 
 	@Override
@@ -37,29 +58,49 @@ public class LinkedList<E> extends AbstractList<E> {
 	@Override
 	public E remove(int index) {
 		rangeCheck(index);
-		
-		Node<E> node = first;
-		if (index == 0) {
-			first = first.next;
+
+		Node<E> node = node(index);
+		Node<E> prev = node.prev;
+		Node<E> next = node.next;
+
+		if (prev == null) {// index==0
+			first = next;
 		} else {
-			Node<E> prev = node(index - 1);
-			node = prev.next;
-			prev.next = node.next;
+			prev.next = next;
 		}
+
+		if (next == null) {// index = size-1
+			last = prev;
+		} else {
+			next.prev = prev;
+		}
+
 		size--;
 		return node.element;
 	}
 
-	/**
-	 * 
-	 */
 	@Override
 	public void add(int index, E element) {
-		if (index == 0) {
-			first = new Node<>(element, first);
-		} else {
-			Node<E> previous = node(index - 1);
-			previous.next = new Node<>(element, previous.next);
+		// size==0
+		// index==0
+		if (index == size) {// 往最后添加
+			Node<E> oldLast = last;
+			last = new Node<>(oldLast, element, null);
+			if (oldLast == null) {
+				first = last;
+			} else {
+				oldLast.next = last;
+			}
+		} else {// 中间和头部
+			Node<E> next = node(index);
+			Node<E> prev = next.prev;
+			Node<E> node = new Node<>(prev, element, next);
+			next.prev = node;
+			if (prev == null) {
+				first = node;
+			} else {
+				prev.next = node;
+			}
 		}
 		size++;
 	}
@@ -92,11 +133,21 @@ public class LinkedList<E> extends AbstractList<E> {
 	 */
 	private Node<E> node(int index) {
 		rangeCheck(index);
-		Node<E> node = first;
-		for (int i = 0; i < index; i++) {
-			node = node.next;
+
+		if (index < (size >> 1)) {
+			Node<E> node = first;
+			for (int i = 0; i < index; i++) {
+				node = node.next;
+			}
+			return node;
+		} else {
+			Node<E> node = last;
+			for (int i = size - 1; i > index; i--) {
+				node = node.prev;
+			}
+			return node;
 		}
-		return node;
+
 	}
 
 	@Override
@@ -108,7 +159,7 @@ public class LinkedList<E> extends AbstractList<E> {
 		for (int i = 0; i < size; i++) {
 			if (0 != i)
 				string.append(", ");
-			string.append(node.element);
+			string.append(node);
 			node = node.next;
 		}
 		string.append("]");

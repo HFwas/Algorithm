@@ -1,16 +1,10 @@
-package com.mj;
-/**
- * 增加一个虚拟头结点
- */
+package com.mj.single;
+
+import com.mj.AbstractList;
 import com.sun.javafx.sg.prism.NGShape.Mode;
 
-public class LinkedList2<E> extends AbstractList<E> {
+public class SingleLinkedList<E> extends AbstractList<E> {
 	private Node<E> first;
-
-	
-	public LinkedList2() {
-		first = new Node<>(null, null);
-	}
 
 	private static class Node<E> {
 		E element;
@@ -30,7 +24,7 @@ public class LinkedList2<E> extends AbstractList<E> {
 
 	@Override
 	public E get(int index) {
-		return node(index).element;
+		return node(index).element;//
 	}
 
 	@Override
@@ -44,11 +38,15 @@ public class LinkedList2<E> extends AbstractList<E> {
 	@Override
 	public E remove(int index) {
 		rangeCheck(index);
-
-		Node<E> prev = index==0 ? first : node(index - 1);
-		Node<E> node = prev.next;
-		prev.next = node.next;
 		
+		Node<E> node = first;
+		if (index == 0) {
+			first = first.next;
+		} else {
+			Node<E> prev = node(index - 1);
+			node = prev.next;
+			prev.next = node.next;
+		}
 		size--;
 		return node.element;
 	}
@@ -58,10 +56,12 @@ public class LinkedList2<E> extends AbstractList<E> {
 	 */
 	@Override
 	public void add(int index, E element) {
-		
-		Node<E> previous = index==0 ? first:node(index - 1);
-		previous.next = new Node<>(element, previous.next);
-		
+		if (index == 0) {
+			first = new Node<>(element, first);
+		} else {
+			Node<E> previous = node(index - 1);
+			previous.next = new Node<>(element, previous.next);
+		}
 		size++;
 	}
 
@@ -93,7 +93,7 @@ public class LinkedList2<E> extends AbstractList<E> {
 	 */
 	private Node<E> node(int index) {
 		rangeCheck(index);
-		Node<E> node = first.next;
+		Node<E> node = first;
 		for (int i = 0; i < index; i++) {
 			node = node.next;
 		}
@@ -105,7 +105,7 @@ public class LinkedList2<E> extends AbstractList<E> {
 		// 打印形式为: size=5, [99, 88, 77, 66, 55]
 		StringBuilder string = new StringBuilder();
 		string.append("size=").append(size).append(", [");
-		Node<E> node = first.next;
+		Node<E> node = first;
 		for (int i = 0; i < size; i++) {
 			if (0 != i)
 				string.append(", ");

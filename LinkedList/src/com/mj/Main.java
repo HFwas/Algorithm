@@ -1,6 +1,6 @@
 package com.mj;
 
-import com.mj.circle.SingleCircleLinkedList;
+import com.mj.circle.CircleLinkedList;
 
 public class Main {
 	
@@ -27,12 +27,34 @@ public class Main {
 		System.out.println(list);
 	}
 
+	static void josephus(){
+		CircleLinkedList<Object> list = new CircleLinkedList<>();
+		
+		for (int i = 1; i < 9; i++) {
+			list.add(i);
+		}
+		//指向头结点（指向1）
+		list.reset();
+		
+		while (!list.isEmpty()) {
+			list.next();
+			list.next();
+			System.out.println(list.remove());
+		}
+	}
+	
 	public static void main(String[] args) {
 		
-		testList(new SingleCircleLinkedList<>());
+		josephus();
+		//testList(new CircleLinkedList<>());
 		
-		/*testList(new ArrayList<>());
-		testList(new LinkedList<>());*/
+		//testList(new CircleLinkedList<>());
+		
+		//testList(new SingleCircleLinkedList<>());//单向循环链表
+		
+		/*testList(new ArrayList<>());//动态链表
+		testList(new LinkedList<>());//线性链表
+		*/
 		
 		//List<Object> list = new ArrayList2<>();
 		/*list.add(10);

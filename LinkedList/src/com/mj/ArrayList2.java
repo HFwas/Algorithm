@@ -1,16 +1,19 @@
 package com.mj;
-
+/**
+ * 动态缩容
+ * @author Administrator
+ */
 @SuppressWarnings("unchecked")
-public class ArrayList<E> extends AbstractList<E>{
+public class ArrayList2<E> extends AbstractList<E>{
 	private E[] elements; 	// 所有的元素
 
 	private static final int DEFAULT_CAPACITY = 10; // 初始容量
 	
-	public ArrayList(int capacity) { // 容量小于10一律扩充为10
+	public ArrayList2(int capacity) { // 容量小于10一律扩充为10
 		capacity = (capacity < DEFAULT_CAPACITY) ? DEFAULT_CAPACITY : capacity;
 		elements = (E[])new Object[capacity];
 	}
-	public ArrayList(){
+	public ArrayList2(){
 		this(DEFAULT_CAPACITY);
 	}
 	/**
@@ -61,6 +64,8 @@ public class ArrayList<E> extends AbstractList<E>{
 			elements[i] = elements[i + 1];
 		}
 		elements[--size] = null; // 删除元素后, 将最后一位设置为null
+		
+		trim();//数组缩容
 		return old;
 	}
 	
@@ -114,6 +119,23 @@ public class ArrayList<E> extends AbstractList<E>{
 		elements = newElements;
 		System.out.println("size="+oldCapacity+", 扩容到了"+newCapacity);
 	}
+	
+	private void trim(){
+		int oldCapacity = elements.length;
+		int newCapacity = oldCapacity >> 1;//缩容一半
+		if (size >= (newCapacity) || newCapacity <= DEFAULT_CAPACITY) {
+			return ;
+		}
+		//System.out.println(oldCapacity+"_"+newCapacity);
+		E[] newElements = (E[])new Object[newCapacity];
+		for (int i = 0; i < size; i++) {
+			newElements[i] = elements[i]; // 拷贝原数组元素到新数组
+		}
+		elements = newElements;
+		System.out.println("size="+oldCapacity+",缩容到了"+newCapacity);
+	}
+	
+	
 	/****************封装好的功能函数***************************/
 	@Override
 	public String toString() {

@@ -9,6 +9,10 @@ public class Stack<E> {
 	public void clear() {
 		list.clear();
 	}
+	
+	public int size() {
+		return list.size();
+	}
 
 	public boolean isEmpty() {
 		return list.isEmpty();

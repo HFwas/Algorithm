@@ -12,6 +12,14 @@ public class CircleQueue<E> {
 		elements = (E[]) new Object[DEFAULT_CAPACITY];
 	}
 	
+	public void clear() {
+		for (int i = 0; i < elements.length; i++) {
+			elements[index(i)] = null;
+		}
+		size = 0;
+		front = 0;
+	}
+	
 	// 入队
 	public void enQueue(E element) {
 		ensureCapacity(size+1);
@@ -43,7 +51,8 @@ public class CircleQueue<E> {
 	}
 	
 	public int index(int index) {
-		return (index +front) % elements.length;
+		index += front;
+		return index - (index >= elements.length ? elements.length : 0);
 	}
 	
 	@Override

@@ -2,9 +2,13 @@ package com.mj;
 
 import com.mj.list.LinkedList;
 import com.mj.list.List;
-
+//队列
 public class Queue <E>{
 	private List<E> list = new LinkedList<>();
+	
+	public void clear() {
+		list.clear();
+	}
 	
 	//入队
 	public void enQueue(E element){

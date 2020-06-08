@@ -1,5 +1,7 @@
 package com.mj;
 
+import java.util.Comparator;
+
 public class BinarySearchTree<E> {
 	private int size;
 	private Node<E> root;

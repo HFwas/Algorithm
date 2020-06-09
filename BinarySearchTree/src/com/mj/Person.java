@@ -2,16 +2,23 @@ package com.mj;
 
 public class Person implements Comparable<Person> {
 	private int age;
+	private String name;
 	
+	public Person(int age, String name) {
+		this.age = age;
+		this.name = name;
+	}
+
+	public Person(int age) {
+		this.age = age;
+	}
+
+
 	public int getAge() {
 		return age;
 	}
 
 	public void setAge(int age) {
-		this.age = age;
-	}
-
-	public Person(int age) {
 		this.age = age;
 	}
 
@@ -21,6 +28,11 @@ public class Person implements Comparable<Person> {
 //		if(age < e.age) return -1;
 //		return 0;
 		return age - e.age;
+	}
+	
+	@Override
+	public String toString() {
+		return age + "";
 	}
 	
 }

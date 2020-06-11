@@ -2,6 +2,7 @@ package com.mj;
 
 import java.util.Comparator;
 
+import com.mj.BinarySearchTree.Visitor;
 import com.mj.file.Files;
 import com.mj.printer.BinaryTrees;
 
@@ -68,7 +69,7 @@ public class Main {
 		BinarySearchTree<Person> bst = new BinarySearchTree<>(new Comparator<Person>() {
 			@Override
 			public int compare(Person o1, Person o2) {
-				return o2.getAge() - o1.getAge();
+				return o1.getAge() - o2.getAge();
 			}
 		});
 		bst.add(new Person(15, "jack"));
@@ -77,29 +78,28 @@ public class Main {
 		bst.add(new Person(10, "kali")); // add()时值相等最好覆盖，否则则不会替换
 		BinaryTrees.println(bst);
 	}
+	
+	static void test06() {
+		Integer data[] = new Integer[] { 7, 4, 9, 2, 5, 8, 11, 3, 12, 1 };
 
+		BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+		for (int i = 0; i < data.length; i++) {
+			bst.add(data[i]);
+		}
+		BinaryTrees.println(bst);
+		
+		//bst.levelOrderTraversal();
+		
+		bst.levelOrder(new Visitor<Integer>() {
+			@Override
+			public void visit(Integer element) {
+				System.out.print("_" + element + "_");
+			}
+		});
+	}
+	
 	public static void main(String[] args) {
-
-		test02();
-
-		// JAVA中的匿名类，相当于IOS中的Block
-		/*
-		 * BinarySearchTree<Person> bst2 = new BinarySearchTree<>(new
-		 * Comparator<Person>() {
-		 * 
-		 * @Override public int compare(Person o1, Person o2) { return 0; }
-		 * 
-		 * }); bst2.add(new Person(12)); bst2.add(new Person(22));
-		 * 
-		 * BinarySearchTree<Person> bst3 = new BinarySearchTree<>(new
-		 * PersonComparator()); bst2.add(new Person(12)); bst2.add(new
-		 * Person(22));
-		 * 
-		 * BinarySearchTree<Person> bst4 = new BinarySearchTree<>(new
-		 * PersonComparator2()); bst4.add(new Person(12)); bst4.add(new
-		 * Person(22));
-		 */
-
+		test06();
 	}
 
 }

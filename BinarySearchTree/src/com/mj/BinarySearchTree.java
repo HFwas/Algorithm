@@ -96,61 +96,77 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
 		}
 		size++;
 	}
-	
+
+	public void preorderTraversal(Visitor<E> visitor) {
+		preorderTraversal(root, visitor);
+	}
+
+	private void preorderTraversal(Node<E> node, Visitor<E> visitor) {
+		if (node == null || visitor == null)
+			return;
+		visitor.visit(node.element);
+		preorderTraversal(node.left, visitor);
+		preorderTraversal(node.right, visitor);
+	}
+
 	// 前序遍历
-	public void preorderTraversal() {
-		preorderTraversal(root);
+	/*
+	 * public void preorderTraversal() { preorderTraversal(root); } private void
+	 * preorderTraversal(Node<E> node) { if (node == null) return;
+	 * System.out.println(node.element); preorderTraversal(node.left);
+	 * preorderTraversal(node.right); }
+	 */
+	public void inorderTraversal(Visitor<E> visitor) {
+		inorderTraversal(root, visitor);
 	}
 
-	private void preorderTraversal(Node<E> node) {
-		if (node == null)
+	private void inorderTraversal(Node<E> node, Visitor<E> visitor) {
+		if (node == null || visitor == null)
 			return;
-		System.out.println(node.element);
-		preorderTraversal(node.left);
-		preorderTraversal(node.right);
+		inorderTraversal(node.left, visitor);
+		visitor.visit(node.element);
+		inorderTraversal(node.right, visitor);
 	}
+
 	// 中序遍历
-	public void inorderTraversal() {
-		inorderTraversal(root);
+	/*
+	 * public void inorderTraversal() { inorderTraversal(root); } private void
+	 * inorderTraversal(Node<E> node) { // 正序 if(node == null) return ;
+	 * inorderTraversal(node.left); System.out.println(node.element);
+	 * inorderTraversal(node.right); // 逆序 if (node == null) return;
+	 * inorderTraversal(node.right); System.out.println(node.element);
+	 * inorderTraversal(node.left); }
+	 */
+	//
+	public void postorderTraversal(Visitor<E> visitor) {
+		postorderTraversal(root, visitor);
 	}
 
-	private void inorderTraversal(Node<E> node) {
-		// 正序
-		/*if(node == null) return ;
-		inorderTraversal(node.left);
-		System.out.println(node.element); 
-		inorderTraversal(node.right);*/
-		// 逆序
-		if (node == null)
+	private void postorderTraversal(Node<E> node, Visitor<E> visitor) {
+		if (node == null || visitor == null)
 			return;
-		inorderTraversal(node.right);
-		System.out.println(node.element);
-		inorderTraversal(node.left);
+		postorderTraversal(node.left, visitor);
+		postorderTraversal(node.right, visitor);
+		visitor.visit(node.element);
 	}
 
 	// 后序遍历
-	public void postorderTraversal() {
-		postorderTraversal(root);
-	}
-
-	private void postorderTraversal(Node<E> node) {
-		// 正序
-		if (node == null)
-			return;
-		postorderTraversal(node.left);
-		postorderTraversal(node.right);
-		System.out.println(node.element);
-
-	}
-	// 层次遍历
-	public void levelOrderTraversal() {
-		if (root == null)
+	/*
+	 * public void postorderTraversal() { postorderTraversal(root); } private
+	 * void postorderTraversal(Node<E> node) { // 正序 if (node == null) return;
+	 * postorderTraversal(node.left); postorderTraversal(node.right);
+	 * System.out.println(node.element);
+	 * 
+	 * }
+	 */
+	public void levelOrder(Visitor<E> visitor) {
+		if (root == null || visitor == null)
 			return;
 		Queue<Node<E>> queue = new LinkedList<>();
 		queue.offer(root);
 		while (!queue.isEmpty()) {
 			Node<E> node = queue.poll();
-			System.out.println(node.element);
+			visitor.visit(node.element);
 			if (node.left != null) {
 				queue.offer(node.left);
 			}
@@ -158,7 +174,103 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
 				queue.offer(node.right);
 			}
 		}
+	}
 
+	// 层次遍历
+	/*public void levelOrderTraversal() { 
+		if (root == null) return;
+	 Queue<Node<E>> queue = new LinkedList<>(); queue.offer(root); while
+	 (!queue.isEmpty()) { Node<E> node = queue.poll();
+	 System.out.println(node.element); if (node.left != null) {
+	 queue.offer(node.left); } if (node.right != null) {
+	 queue.offer(node.right); } }
+	  }*/
+	
+	// 递归求高度
+	public int height1(Node<E> node) {
+		if (node == null)
+			return 0;
+		return 1 + Math.max(height1(node.left), height1(node.right));
+	}
+	public int height1() {
+		return height1(root);
+	}
+
+	// 迭代求高度
+	public int height() {
+		if (root == null)
+			return 0;
+		int levelSize = 1; // 存储每一层的元素数量
+		int height = 0; // 树的高度
+		Queue<Node<E>> queue = new LinkedList<>();
+		queue.offer(root);
+		while (!queue.isEmpty()) {
+			Node<E> node = queue.poll();
+			levelSize--;
+			if (node.left != null) {
+				queue.offer(node.left);
+			}
+			if (node.right != null) {
+				queue.offer(node.right);
+			}
+			if (levelSize == 0) { // 即将要访问下一层
+				levelSize = queue.size();
+				height++;
+			}
+		}
+		return height;
+	}
+	//是否是完全二叉树
+	/*public boolean isComplete(){ 
+	  	if(root == null) return false;
+	  	Queue<Node<E>> queue = new LinkedList<>(); 
+	  	queue.offer(root); 
+	  	boolean leaf = false; 
+	  	while(!queue.isEmpty()){ 
+	  		Node<E> node = queue.poll();
+	  		if(leaf && !node.isLeaf()){ 
+	  			return false; 
+	  		} 
+	  		if(node.hasTwoChildren()) {//正常入队 
+	  			queue.offer(node.left); 
+	  			queue.offer(node.right); 
+	  		}else if(node.left==null && node.right!=null){ 
+	  			return false; 
+	  		}else{ 
+	  			leaf =true;
+	  			//修复bug
+	  			if (node.left != null) {
+					queue.offer(node.left);
+				}
+	  		} 
+	  	}
+	  	return true; 
+	}*/
+	public boolean isComplete() {
+		if (root == null)  return false;
+		Queue<Node<E>> queue = new LinkedList<>();
+		queue.offer(root);
+		boolean leaf = false;
+		while (!queue.isEmpty()) {
+			Node<E> node = queue.poll();
+			if (leaf && !node.isLeaf()) { // 要求是叶子结点，但是当前节点不是叶子结点
+				return false;
+			}
+			if (node.left != null) {
+				queue.offer(node.left);
+			} else if (node.right != null) {
+				// node.left==null && node.right!=null
+				return false;
+			}
+			if (node.right != null) {
+				queue.offer(node.right);
+			} else {
+				// node.left==null && node.right==null
+				// node.left!=null && node.right==null
+				leaf = true; // 要求后面都是叶子节点
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -192,24 +304,7 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
 		return null;
 	}
 
-	public void levelOrder(Visitor<E> visitor) {
-		if (root == null || visitor == null)
-			return;
-		Queue<Node<E>> queue = new LinkedList<>();
-		queue.offer(root);
-		while (!queue.isEmpty()) {
-			Node<E> node = queue.poll();
-			visitor.visit(node.element);
-			if (node.left != null) {
-				queue.offer(node.left);
-			}
-			if (node.right != null) {
-				queue.offer(node.right);
-			}
-		}
-
-	}
-	//访问器接口
+	// 访问器接口
 	public static interface Visitor<E> {
 		void visit(E element);
 	}

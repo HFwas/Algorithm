@@ -90,7 +90,13 @@ public class Main {
 		
 		//bst.levelOrderTraversal();
 		
-		bst.levelOrder(new Visitor<Integer>() {
+		/*bst.levelOrder(new Visitor<Integer>() {
+			@Override
+			public void visit(Integer element) {
+				System.out.print("_" + element + "_");
+			}
+		});*/
+		bst.postorderTraversal(new Visitor<Integer>() {
 			@Override
 			public void visit(Integer element) {
 				System.out.print("_" + element + "_");
@@ -98,8 +104,26 @@ public class Main {
 		});
 	}
 	
+	static void test07() {
+		//Integer data[] = new Integer[] { 7, 4, 9, 2, 5, 8, 11, 3, 1 };
+		Integer data[] = new Integer[] { 7, 4, 9, 2, 1 };
+		BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+		for (int i = 0; i < data.length; i++) {
+			bst.add(data[i]);
+		}
+		/*BinarySearchTree<Object> bst = new BinarySearchTree<>();
+		for (int i = 0; i < 40; i++) {
+			bst.add((int) (Math.random() * 100));
+		}*/
+		BinaryTrees.println(bst);
+		//测试：树的高度
+		//System.out.println(bst.height1());
+		//测试 ： 是否是完全二叉树
+		System.out.println(bst.isComplete());
+	}
+	
 	public static void main(String[] args) {
-		test06();
+		test07();
 	}
 
 }

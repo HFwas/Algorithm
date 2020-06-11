@@ -106,7 +106,7 @@ public class Main {
 	
 	static void test07() {
 		//Integer data[] = new Integer[] { 7, 4, 9, 2, 5, 8, 11, 3, 1 };
-		Integer data[] = new Integer[] { 7, 4, 9, 2, 1 };
+		Integer data[] = new Integer[] { 7, 4, 9, 2, 5,1,8,11 };
 		BinarySearchTree<Integer> bst = new BinarySearchTree<>();
 		for (int i = 0; i < data.length; i++) {
 			bst.add(data[i]);
@@ -119,11 +119,22 @@ public class Main {
 		//测试：树的高度
 		//System.out.println(bst.height1());
 		//测试 ： 是否是完全二叉树
-		System.out.println(bst.isComplete());
+		//System.out.println(bst.isComplete());
+	}
+	static void test08() {
+		Integer data[] = new Integer[] { 7, 4, 9, 2, 5, 8, 11, 3, 12, 1 };
+		BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+		for (int i = 0; i < data.length; i++) {
+			bst.add(data[i]);
+		}
+		BinaryTrees.println(bst);
+		bst.remove(12);
+		System.out.println(bst);
 	}
 	
+	
 	public static void main(String[] args) {
-		test07();
+		test08();
 	}
 
 }

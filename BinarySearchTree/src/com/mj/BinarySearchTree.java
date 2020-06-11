@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import com.mj.printer.BinaryTreeInfo;
-
 @SuppressWarnings("unchecked")
 public class BinarySearchTree<E> implements BinaryTreeInfo {
 	private int size;
@@ -177,21 +176,22 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
 	}
 
 	// 层次遍历
-	/*public void levelOrderTraversal() { 
-		if (root == null) return;
-	 Queue<Node<E>> queue = new LinkedList<>(); queue.offer(root); while
-	 (!queue.isEmpty()) { Node<E> node = queue.poll();
-	 System.out.println(node.element); if (node.left != null) {
-	 queue.offer(node.left); } if (node.right != null) {
-	 queue.offer(node.right); } }
-	  }*/
-	
+	/*
+	 * public void levelOrderTraversal() { if (root == null) return;
+	 * Queue<Node<E>> queue = new LinkedList<>(); queue.offer(root); while
+	 * (!queue.isEmpty()) { Node<E> node = queue.poll();
+	 * System.out.println(node.element); if (node.left != null) {
+	 * queue.offer(node.left); } if (node.right != null) {
+	 * queue.offer(node.right); } } }
+	 */
+
 	// 递归求高度
 	public int height1(Node<E> node) {
 		if (node == null)
 			return 0;
 		return 1 + Math.max(height1(node.left), height1(node.right));
 	}
+
 	public int height1() {
 		return height1(root);
 	}
@@ -220,34 +220,21 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
 		}
 		return height;
 	}
-	//是否是完全二叉树
-	/*public boolean isComplete(){ 
-	  	if(root == null) return false;
-	  	Queue<Node<E>> queue = new LinkedList<>(); 
-	  	queue.offer(root); 
-	  	boolean leaf = false; 
-	  	while(!queue.isEmpty()){ 
-	  		Node<E> node = queue.poll();
-	  		if(leaf && !node.isLeaf()){ 
-	  			return false; 
-	  		} 
-	  		if(node.hasTwoChildren()) {//正常入队 
-	  			queue.offer(node.left); 
-	  			queue.offer(node.right); 
-	  		}else if(node.left==null && node.right!=null){ 
-	  			return false; 
-	  		}else{ 
-	  			leaf =true;
-	  			//修复bug
-	  			if (node.left != null) {
-					queue.offer(node.left);
-				}
-	  		} 
-	  	}
-	  	return true; 
-	}*/
+
+	// 是否是完全二叉树
+	/*
+	 * public boolean isComplete(){ if(root == null) return false;
+	 * Queue<Node<E>> queue = new LinkedList<>(); queue.offer(root); boolean
+	 * leaf = false; while(!queue.isEmpty()){ Node<E> node = queue.poll();
+	 * if(leaf && !node.isLeaf()){ return false; } if(node.hasTwoChildren())
+	 * {//正常入队 queue.offer(node.left); queue.offer(node.right); }else
+	 * if(node.left==null && node.right!=null){ return false; }else{ leaf =true;
+	 * //修复bug if (node.left != null) { queue.offer(node.left); } } } return
+	 * true; }
+	 */
 	public boolean isComplete() {
-		if (root == null)  return false;
+		if (root == null)
+			return false;
 		Queue<Node<E>> queue = new LinkedList<>();
 		queue.offer(root);
 		boolean leaf = false;
@@ -273,23 +260,50 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
 		return true;
 	}
 
-	/**
-	 * 根据传入的值删除元素
-	 */
+	// 根据传入的值删除
 	public void remove(E element) {
+		remove(node(element));
 	}
 
-	/**
-	 * 是否包含某元素
-	 */
-	public boolean contains(E element) {
-		return node(element) != null;
+	private void remove(Node<E> node) {
+		if(node == null) return ;
+		size--;
+		if (node.hasTwoChildren()) {//删除度为2的节点
+			//找到后继节点
+			Node<E> s = successor(node);
+			//用后继节点的值覆盖删除节点的值
+			node.element = s.element;
+			//删除后继节点
+			node = s;
+		}
+		
+		//删除node节点的值（node的度必为1或者0）
+		Node<E> replacement = node.left != null ? node.left : node.right;
+		if (replacement != null) {//node是度为1的节点
+			//更改parent
+			replacement.parent = node.parent;
+			//更改parent的left,right的指向
+			if (node.parent == null) {
+				root = replacement;
+			}else if (node == node.parent.left) {//
+				node.parent.left = replacement;
+			}else {//node.parent.right = replacement
+				node.parent.right = replacement;
+			}
+		}else if (node.parent == null) {//node是叶子节点并且是根节点
+			root = null;
+		}else {//node是叶子节点但不是根节点
+			if (node == node.parent.left) {
+				node.parent.left = null;
+			}else {//node.parent.right == node
+				node.parent.right = null;
+			}
+		}
+		
 	}
-
 	// 根据元素值获取节点元素
 	private Node<E> node(E element) {
 		elementNotNullCheck(element);
-
 		Node<E> node = root;
 		while (node != null) {
 			int cmp = compare(element, node.element);
@@ -302,6 +316,53 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 是否包含某元素
+	 */
+	public boolean contains(E element) {
+		return node(element) != null;
+	}
+
+	// 前驱节点
+	private Node<E> predesessor(Node<E> node) {
+		if (node == null)
+			return null;
+		// 前驱节点在左子树当中(left.right.right.right....)
+		Node<E> p = node.left;
+		if (p != null) {
+			while (p.right != null) {
+				p = p.right;
+			}
+			return p;
+		}
+		// 从父节点，祖父节点当中寻找前驱节点
+		while (node.parent != null && node == node.parent.left) {
+			node = node.parent;
+		}
+		// node.parent == null
+		// node = node.parent.right
+		return node.parent;
+	}
+
+	// 后驱节点
+	private Node<E> successor(Node<E> node) {
+		if (node == null)
+			return null;
+		// 前驱节点在左子树当中(right.left.left.left....)
+		Node<E> p = node.right;
+		if (p != null) {
+			while (p.left != null) {
+				p = p.left;
+			}
+			return p;
+		}
+		// 从父节点，祖父节点当中寻找前驱节点
+		while (node.parent != null && node == node.parent.right) {
+			node = node.parent;
+		}
+		return node.parent;
 	}
 
 	// 访问器接口

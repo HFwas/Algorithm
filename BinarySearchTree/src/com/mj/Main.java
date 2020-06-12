@@ -128,11 +128,10 @@ public class Main {
 			bst.add(data[i]);
 		}
 		BinaryTrees.println(bst);
+		//bst.add(9);
 		bst.remove(12);
-		System.out.println(bst);
+		BinaryTrees.println(bst);
 	}
-	
-	
 	public static void main(String[] args) {
 		test08();
 	}

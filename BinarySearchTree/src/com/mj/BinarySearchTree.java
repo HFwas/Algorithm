@@ -307,10 +307,10 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
 		Node<E> node = root;
 		while (node != null) {
 			int cmp = compare(element, node.element);
-			if (cmp < 0) {
-				node = node.left;
-			} else if (cmp > 0) {
+			if (cmp > 0) {
 				node = node.right;
+			} else if (cmp > 0) {
+				node = node.left;
 			} else { // cmp == 0
 				return node;
 			}
@@ -348,11 +348,10 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
 
 	// 后驱节点
 	private Node<E> successor(Node<E> node) {
-		if (node == null)
-			return null;
+		if (node == null) return null;
 		// 前驱节点在左子树当中(right.left.left.left....)
-		Node<E> p = node.right;
-		if (p != null) {
+		if (node.right != null) {
+			Node<E> p = node.right;
 			while (p.left != null) {
 				p = p.left;
 			}

@@ -31,6 +31,16 @@ public class BinaryTree<E> implements BinaryTreeInfo {
 		public boolean isRightChild() { // 判断是否是右孩子
 			return parent != null && this == parent.right;
 		}
+		public Node<E> sibling() {//兄弟节点
+			if (isLeftChild()) {
+				return parent.right;
+			}
+			if (isRightChild()) {
+				return parent.left;
+			}
+			return null;
+		}
+		
 	}
 
 	// 元素数量

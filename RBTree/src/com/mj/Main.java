@@ -3,6 +3,7 @@ package com.mj;
 import com.mj.printer.BinaryTrees;
 import com.mj.tree.AVLTree;
 import com.mj.tree.BST;
+import com.mj.tree.RBTree;
 
 public class Main {
 
@@ -27,9 +28,19 @@ public class Main {
 		}
 		//BinaryTrees.println(avl);
 	}
+	static void test02() {
+		Integer data[] = new Integer[] { 
+				98, 3, 8, 18, 85, 66, 11, 89, 47, 76, 49, 16, 100, 63, 65, 24, 83, 22, 69
+		};
+		RBTree<Integer> rbt = new RBTree<Integer>();
+		for (int i = 0; i < data.length; i++) {
+			rbt.add(data[i]);
+		}
+		BinaryTrees.println(rbt);
+	}
 
 	public static void main(String[] args) {
-		test01();
+		test02();
 	}
 
 }

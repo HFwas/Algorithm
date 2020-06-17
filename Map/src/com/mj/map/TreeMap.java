@@ -71,14 +71,14 @@ public class TreeMap<K,V> implements Map<K, V> {
 		}
 		
 		//看看插入到父节点那个位置
-		Node<K,V> newNode = new Node<K, V>(key, value, parent);
+		Node<K,V> newNode = new Node<>(key, value, parent);
 		if (cmp > 0) {
 			parent.right = newNode;
 		} else {
 			parent.left = newNode;
 		}
 		size++;
-
+		
 		//新添加节点之后的处理
 		afterPut(newNode);
 		return null;
@@ -96,8 +96,8 @@ public class TreeMap<K,V> implements Map<K, V> {
 	}
 	private V remove(Node<K, V> node) {
 		if(node == null) return null;
-		size--;
 		V oldValue = node.value;
+		size--;
 		
 		
 		if (node.hasTwoChildren()) {//删除度为2的节点
@@ -180,7 +180,7 @@ public class TreeMap<K,V> implements Map<K, V> {
 		if (node == null || visitor.stop) return ;
 		
 		traversal(node.left, visitor);
-		if(visitor.stop) return ;
+		if(visitor.stop) return;
 		visitor.visit(node.key, node.value);
 		traversal(node.right, visitor);
 	}

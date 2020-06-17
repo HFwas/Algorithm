@@ -25,6 +25,9 @@ public class BST<E>  extends BinaryTree<E>{
 			afterAdd(root);
 			return;
 		}
+		
+		//添加的不是第一个节点
+		//找到父节点
 		Node<E> node = root;
 		Node<E> parent = root;
 		int cmp = 0;
@@ -40,6 +43,8 @@ public class BST<E>  extends BinaryTree<E>{
 				return;
 			}
 		}
+		
+		//看看插入到父节点那个位置
 		Node<E> newNode = createNode(element, parent);
 		if (cmp > 0) {
 			parent.right = newNode;

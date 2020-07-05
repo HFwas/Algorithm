@@ -125,9 +125,9 @@ public class ArrayList<E> {
 			if(elements[i].equals(element)) return i;
 		}
 		 */
-		if(element == null){ // 对 null 进行处理
+		if(element == null){ // 对 null 进行处理    //1
 			for (int i = 0; i < size; i++) {
-				if(elements[i] == null) return i;
+				if(elements[i] == null) return i;  // n
 			}
 		}else{
 			for (int i = 0; i < size; i++) {
@@ -136,6 +136,18 @@ public class ArrayList<E> {
 		}
 		return ELEMENT_NOT_FOUND;
 	}
+	
+//	public int indexOf2(E element){
+//		for (int i = 0; i < size; i++) {
+//			if(valEquals(element, elements[i])) return i;  //2n
+//		}
+//		return ELEMENT_NOT_FOUND;
+//	}
+//	private boolean valEquals(Object v1, Object v2){
+//		return v1 == null ? v2 == null : v1.equals(v2);
+//	}
+	
+	
 	/**
 	 * 清除所有元素
 	 */

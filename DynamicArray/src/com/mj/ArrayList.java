@@ -120,7 +120,7 @@ public class ArrayList<E> {
 	 */
 	public int indexOf(E element){
 		/*
-		// 不对 null 进行处理也可以，但是健壮性不够
+		不对 null 进行处理也可以，但是健壮性不够
 		for (int i = 0; i < size; i++) {
 			if(elements[i].equals(element)) return i;
 		}

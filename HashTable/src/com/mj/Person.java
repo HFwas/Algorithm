@@ -26,6 +26,7 @@ public class Person {
 		//内存地址
 		if(this == obj ) return true;
 		if(obj == null || obj.getClass() != getClass()) return false;
+//		if(obj == null || !(obj instanceof Person)) return false;
 		
 		//比较成员变量
 		Person person = (Person)obj;

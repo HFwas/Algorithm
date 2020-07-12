@@ -1,4 +1,4 @@
-package com.mj;
+package com.mj.model;
 
 public class Person {
 	private int age;

@@ -1,8 +1,12 @@
 package com.mj.map;
 
+import java.awt.print.Printable;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
+
+import com.mj.printer.BinaryTreeInfo;
+import com.mj.printer.BinaryTrees;
 
 @SuppressWarnings("unchecked")
 public class HashMap<K, V> implements Map<K, V> {
@@ -124,6 +128,31 @@ public class HashMap<K, V> implements Map<K, V> {
 		}
 		return false;
 	}
+	
+	public void print(){
+		if(size == 0) return ;
+		for (int i = 0; i < table.length; i++) {
+			final Node<K, V> root = table[i];
+			BinaryTrees.println(new BinaryTreeInfo() {
+				@Override
+				public Object string(Object node) {
+					return node;
+				}
+				@Override
+				public Object root() {
+					return root;
+				}
+				@Override
+				public Object right(Object node) {
+					return ((Node<K, V>)node).right; 
+				}
+				@Override
+				public Object left(Object node) {
+					return ((Node<K, V>)node).left;
+				}
+			});
+		}
+	}
 
 	@Override
 	public void traversal(Visitor<K, V> visitor) {
@@ -215,17 +244,45 @@ public class HashMap<K, V> implements Map<K, V> {
 		}
 		return node.parent;
 	}
+	
 	private Node<K, V> node(K key){
-		Node<K, V> node = table[index(key)];
-		int hash1 = key == null ? 0 : key.hashCode();
+		Node<K, V> root = table[index(key)];
+		return root == null ? null : node(root, key);
+	}
+	private Node<K, V> node(Node<K, V> node , K k1){
+		int h1 = k1 == null ? 0 : k1.hashCode();
+		//存储查找结果
+		Node<K, V> result = null;
 		while (node != null) {
-			int cmp = compare(key, node.key, hash1,node.hash); // 方向
-			if(cmp == 0) return node;
-			if (cmp > 0) {
+			K k2 = node.key;
+			int h2 = node.hash;
+			//先比较哈希值
+			if (h1 > h2) {
 				node = node.right;
-			} else if (cmp < 0) {
+			}else if (h1 < h2) {
 				node = node.left;
-			} 
+			}else if (Objects.equals(k1, k2)) {
+				return node;
+			}else if (k1 != null && k2 != null
+					&& k1.getClass() == k2.getClass()
+					&& k1 instanceof Comparable) {
+				int cmp = ((Comparable)k1).compareTo(k2);
+				if (cmp > 0) {
+					node = node.right;
+				}else if (cmp < 0) {
+					node = node.left;
+				}else {
+					return node;
+				}
+			}else if(node.right != null 
+					&& (result = node(node.right, k1)) != null){//哈希值相等，但是不具备可比较性
+				return result;
+			}else if(node.left != null 
+					&& (result = node(node.left, k1)) != null){//哈希值相等，但是不具备可比较性
+				return result;
+			}else {//找不到
+				return null;
+			}
 		}
 		return null;
 	}
@@ -238,12 +295,9 @@ public class HashMap<K, V> implements Map<K, V> {
 		//比较equals
 		if( Objects.equals(e1, e2)) return 0;
 		//哈希值相等，但是不equals
-		if (e1 != null && e2 != null) {
-			String e1Class = e1.getClass().getName();
-			String e2Class = e2.getClass().getName();
-			result = e1Class.compareTo(e2Class);
-			if(result != 0) return result;
-			
+		if (e1 != null && e2 != null 
+				&& e1.getClass() == e2.getClass()
+				&& e1 instanceof Comparable) {
 			//同一种类型并且具备可比较性
 			if (e1 instanceof Comparable) {
 				return ((Comparable) e1).compareTo(e2);
@@ -489,6 +543,10 @@ public class HashMap<K, V> implements Map<K, V> {
 				return parent.left;
 			}
 			return null;
+		}
+		@Override
+		public String toString() {
+			return "Node_"+ key + "_" + value;
 		}
 	}
 	

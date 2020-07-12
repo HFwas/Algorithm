@@ -2,9 +2,28 @@ package com.mj;
 
 import com.mj.map.HashMap;
 import com.mj.map.Map.Visitor;
+import com.mj.model.Key;
+import com.mj.model.Person;
 
 public class Main {
 	public static void main(String[] args) {
+		HashMap<Object, Integer> map = new HashMap<>();
+		for (int i = 1; i <= 19; i++) {
+			map.put(new Key(i), i);
+		}
+//		map.traversal(new Visitor<Object, Integer>() {
+//			@Override
+//			public boolean visit(Object key, Integer value) {
+//				System.out.println("key_" + key +"_"+value);
+//				return false;
+//			}
+//			
+//		});
+		map.print();
+		System.out.println(map.get(new Key(1)));
+	}
+	
+	static void test06(){
 		Person p1 = new Person(10, 1.67f, "jack");
 		Person p2 = new Person(10, 1.67f, "jack");
 		HashMap<Object, Integer> map = new HashMap<>();

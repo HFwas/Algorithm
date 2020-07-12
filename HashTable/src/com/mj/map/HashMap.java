@@ -1,5 +1,9 @@
 package com.mj.map;
 
+import java.util.LinkedList;
+import java.util.Objects;
+import java.util.Queue;
+
 @SuppressWarnings("unchecked")
 public class HashMap<K, V> implements Map<K, V> {
 	private static final boolean RED = false;
@@ -51,8 +55,9 @@ public class HashMap<K, V> implements Map<K, V> {
 		Node<K,V> node = root;
 		Node<K,V> parent = root;
 		int cmp = 0;
+		int hash1 = key.hashCode();
 		do{
-			cmp = compare(key, node.key); // 方向
+			cmp = compare(key, node.key, hash1,node.hash); // 方向
 			parent = node; // 父节点
 			if (cmp > 0) {
 				node = node.right;
@@ -83,31 +88,171 @@ public class HashMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V get(K key) {
-		return null;
+		Node<K, V> node = node(key);
+		return node != null ? node.value : null;
 	}
 
 	@Override
 	public V remove(K key) {
-		return null;
+		return remove(node(key));
 	}
 
 	@Override
 	public boolean containsKey(K key) {
-		return false;
+		return node(key) != null;
 	}
 
 	@Override
 	public boolean containsValue(V value) {
+		if(size == 0) return false;
+		Queue<Node<K, V>> queue = new LinkedList<>();
+		for (int i = 0; i < table.length; i++) {
+			if(table[i] == null) continue;
+			
+			queue.offer(table[i]);
+			while (!queue.isEmpty()) {
+				Node<K, V> node = queue.poll();
+				if(Objects.equals(value, node.value)) return true;
+				
+				if (node.left != null) {
+					queue.offer(node.left);
+				}
+				if (node.right != null) {
+					queue.offer(node.right);
+				}
+			}
+		}
 		return false;
 	}
 
 	@Override
-	public void traversal(com.mj.map.Map.Visitor<K, V> visitor) {
+	public void traversal(Visitor<K, V> visitor) {
+		if(size == 0 || visitor == null) return ;
+		Queue<Node<K, V>> queue = new LinkedList<>();
+		for (int i = 0; i < table.length; i++) {
+			if(table[i] == null) continue;
+			
+			queue.offer(table[i]);
+			while (!queue.isEmpty()) {
+				Node<K, V> node = queue.poll();
+				if(visitor.visit(node.key, node.value)) return ;
+				
+				if (node.left != null) {
+					queue.offer(node.left);
+				}
+				if (node.right != null) {
+					queue.offer(node.right);
+				}
+			}
+		}
+		return ;
+	}
+	
+	private V remove(Node<K, V> node) {
+		if(node == null) return null;
+		V oldValue = node.value;
+		size--;
 		
+		if (node.hasTwoChildren()) {//删除度为2的节点
+			//找到后继节点
+			Node<K,V> s = successor(node);
+			//用后继节点的值覆盖删除节点的值
+			node.key = s.key;
+			node.value = s.value;
+			//删除后继节点
+			node = s;
+		}
+		
+		//删除node节点的值（node的度必为1或者0）
+		Node<K,V> replacement = node.left != null ? node.left : node.right;
+		int index = index(node);
+		if (replacement != null) {//node是度为1的节点
+			//更改parent
+			replacement.parent = node.parent;
+			//更改parent的left,right的指向
+			if (node.parent == null) {
+				table[index] = replacement;
+			}else if (node == node.parent.left) {//
+				node.parent.left = replacement;
+			}else {//node.parent.right = replacement
+				node.parent.right = replacement;
+			}
+			
+			//删除节点之后的处理
+			afterRemove(replacement);
+		}else if (node.parent == null) {//node是叶子节点并且是根节点
+			table[index] = null;
+			
+			//删除节点之后的处理
+			afterRemove(node);
+		}else {//node是叶子节点但不是根节点
+			if (node == node.parent.left) {
+				node.parent.left = null;
+			}else {//node.parent.right == node
+				node.parent.right = null;
+			}
+			
+			//删除节点之后的处理
+			afterRemove(node);
+		}
+		return oldValue;
+	}
+	// 后继节点
+	private Node<K,V> successor(Node<K,V> node) {
+		if (node == null)
+			return null;
+		// 前驱节点在左子树当中(right.left.left.left....)
+		if (node.right != null) {
+			Node<K,V> p = node.right;
+			while (p.left != null) {
+				p = p.left;
+			}
+			return p;
+		}
+		// 从父节点，祖父节点当中寻找前驱节点
+		while (node.parent != null && node == node.parent.right) {
+			node = node.parent;
+		}
+		return node.parent;
+	}
+	private Node<K, V> node(K key){
+		Node<K, V> node = table[index(key)];
+		int hash1 = key == null ? 0 : key.hashCode();
+		while (node != null) {
+			int cmp = compare(key, node.key, hash1,node.hash); // 方向
+			if(cmp == 0) return node;
+			if (cmp > 0) {
+				node = node.right;
+			} else if (cmp < 0) {
+				node = node.left;
+			} 
+		}
+		return null;
 	}
 	// 节点元素比较
-	private int compare(K e1, K e2) {
-		return 0;
+	private int compare(K e1, K e2, int hash1, int hash2) {
+		//比较哈希值
+		int result = hash1 - hash2;
+		if (result != 0) return result;
+		
+		//比较equals
+		if( Objects.equals(e1, e2)) return 0;
+		//哈希值相等，但是不equals
+		if (e1 != null && e2 != null) {
+			String e1Class = e1.getClass().getName();
+			String e2Class = e2.getClass().getName();
+			result = e1Class.compareTo(e2Class);
+			if(result != 0) return result;
+			
+			//同一种类型并且具备可比较性
+			if (e1 instanceof Comparable) {
+				return ((Comparable) e1).compareTo(e2);
+			}
+		}
+		//同一种类型,哈希值相等，但是不具备可比较性
+		//e1不为null，e2为null
+		//e1为null，e2不为null
+		return System.identityHashCode(e1) - System.identityHashCode(e2);
 	}
 	private void afterRemove(Node<K, V> node) {
 		//如果删除的节点是红色，直接返回即可
@@ -265,7 +410,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		} else if (grand.isRightChild()) {//
 			grand.parent.right = parent;
 		} else {// grand是parent的节点
-			root = parent;
+			table[index(grand)] = parent;
 		}
 
 		// 更新child的parent
@@ -305,8 +450,12 @@ public class HashMap<K, V> implements Map<K, V> {
 		hash = hash ^ (hash >>> 16);
 		return hash & (table.length - 1);
 	}
+	private int index(Node<K, V> node){
+		return (node.hash ^ (node.hash >>> 16)) & (table.length - 1);
+	}
 	
 	private static class Node<K,V>{
+		int hash;
 		K key;
 		V value;
 		boolean color = RED;
@@ -317,6 +466,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		public Node(K key,V value, Node<K,V> parent) {
 			this.key = key;
 			this.value = value;
+			this.hash = key == null ? 0 : key.hashCode();
 			this.parent = parent;
 		}
 		public boolean isLeaf() { // 是否叶子节点

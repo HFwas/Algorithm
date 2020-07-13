@@ -59,10 +59,39 @@ public class HashMap<K, V> implements Map<K, V> {
 		Node<K,V> node = root;
 		Node<K,V> parent = root;
 		int cmp = 0;
-		int hash1 = key.hashCode();
+		K k1 = key; 
+		int h1 = k1 == null ? 0 : k1.hashCode();
+		Node<K, V> result = null;
+		boolean search = false; //是否搜索过key
 		do{
-			cmp = compare(key, node.key, hash1,node.hash); // 方向
 			parent = node; // 父节点
+			K k2 = node.key;
+			int h2 = node.hash;
+			if (h1 > h2) {
+				cmp = 1;
+			}else if (h1 < h2) {
+				cmp = -1;
+			}else if (Objects.equals(k1, k2)) {
+				cmp = 0;
+			}else if (k1 != null && k2 != null
+					&& k1.getClass() == k2.getClass()
+					&& k1 instanceof Comparable
+					&& (cmp = ((Comparable)k1).compareTo(k2)) != 0) {
+				//>0 <0 =0
+			}else if(search){//已经扫描过了
+				cmp = System.identityHashCode(k1) - System.identityHashCode(k2);
+			}else { //search == false的情况,还没有扫描，然后根据内存地址大小决定左右
+				if ((node.left != null && (result = node(node.left,k1)) != null)
+						||(node.right != null && (result = node(node.right,k1)) != null)) {
+					//已经存在这个key
+					node = result;
+					cmp = 0;
+				}else {//说明不存在
+					search = true;
+					cmp = System.identityHashCode(k1) - System.identityHashCode(k2);
+				}
+			}
+			
 			if (cmp > 0) {
 				node = node.right;
 			} else if (cmp < 0) {
@@ -253,6 +282,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		int h1 = k1 == null ? 0 : k1.hashCode();
 		//存储查找结果
 		Node<K, V> result = null;
+		int cmp = 0;
 		while (node != null) {
 			K k2 = node.key;
 			int h2 = node.hash;
@@ -265,49 +295,46 @@ public class HashMap<K, V> implements Map<K, V> {
 				return node;
 			}else if (k1 != null && k2 != null
 					&& k1.getClass() == k2.getClass()
-					&& k1 instanceof Comparable) {
-				int cmp = ((Comparable)k1).compareTo(k2);
-				if (cmp > 0) {
-					node = node.right;
-				}else if (cmp < 0) {
-					node = node.left;
-				}else {
-					return node;
-				}
+					&& k1 instanceof Comparable
+					&& (cmp = ((Comparable)k1).compareTo(k2)) != 0) {
+				node = cmp > 0 ? node.right : node.left;
 			}else if(node.right != null 
 					&& (result = node(node.right, k1)) != null){//哈希值相等，但是不具备可比较性
 				return result;
-			}else if(node.left != null 
-					&& (result = node(node.left, k1)) != null){//哈希值相等，但是不具备可比较性
-				return result;
-			}else {//找不到
-				return null;
+			}else {//只能王左边找
+				node = node.left;
 			}
+//			}else if(node.left != null 
+//					&& (result = node(node.left, k1)) != null){//哈希值相等，但是不具备可比较性
+//				return result;
+//			}else {//找不到
+//				return null;
+//			}
 		}
 		return null;
 	}
 	// 节点元素比较
-	private int compare(K e1, K e2, int hash1, int hash2) {
-		//比较哈希值
-		int result = hash1 - hash2;
-		if (result != 0) return result;
-		
-		//比较equals
-		if( Objects.equals(e1, e2)) return 0;
-		//哈希值相等，但是不equals
-		if (e1 != null && e2 != null 
-				&& e1.getClass() == e2.getClass()
-				&& e1 instanceof Comparable) {
-			//同一种类型并且具备可比较性
-			if (e1 instanceof Comparable) {
-				return ((Comparable) e1).compareTo(e2);
-			}
-		}
-		//同一种类型,哈希值相等，但是不具备可比较性
-		//e1不为null，e2为null
-		//e1为null，e2不为null
-		return System.identityHashCode(e1) - System.identityHashCode(e2);
-	}
+//	private int compare(K e1, K e2, int hash1, int hash2) {
+//		//比较哈希值
+//		int result = hash1 - hash2;
+//		if (result != 0) return result;
+//		
+//		//比较equals
+//		if( Objects.equals(e1, e2)) return 0;
+//		//哈希值相等，但是不equals
+//		if (e1 != null && e2 != null 
+//				&& e1.getClass() == e2.getClass()
+//				&& e1 instanceof Comparable) {
+//			//同一种类型并且具备可比较性
+//			if (e1 instanceof Comparable) {
+//				return ((Comparable) e1).compareTo(e2);
+//			}
+//		}
+//		//同一种类型,哈希值相等，但是不具备可比较性
+//		//e1不为null，e2为null
+//		//e1为null，e2不为null
+//		return System.identityHashCode(e1) - System.identityHashCode(e2);
+//	}
 	private void afterRemove(Node<K, V> node) {
 		//如果删除的节点是红色，直接返回即可
 		//if (isRed(node))  return ;
@@ -440,7 +467,6 @@ public class HashMap<K, V> implements Map<K, V> {
 
 		afterRotate(grand, parent, child);
 	}
-
 	private void rotateRight(Node<K,V> grand) {// 右旋转
 		Node<K,V> parent = grand.left;
 		Node<K,V> child = parent.right;
@@ -449,7 +475,6 @@ public class HashMap<K, V> implements Map<K, V> {
 
 		afterRotate(grand, parent, child);
 	}
-	
 	/**
 	 * 公共代码：不管是左旋、右旋，都要执行的
 	 * @param grand 失衡节点

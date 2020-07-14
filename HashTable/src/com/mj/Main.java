@@ -1,6 +1,8 @@
 package com.mj;
 
 import com.mj.Times.Task;
+import com.mj.file.FileInfo;
+import com.mj.file.Files;
 import com.mj.map.HashMap;
 import com.mj.map.Map;
 import com.mj.map.Map.Visitor;
@@ -12,7 +14,11 @@ import com.mj.model.SubKey2;
 
 public class Main {
 	public static void main(String[] args) {
-		test07();
+		test1();
+		test2(new HashMap<>());
+		test3(new HashMap<>());
+		test4(new HashMap<>());
+		test5(new HashMap<>());
 	}
 	
 	static void test1Map(Map<String, Integer> map, String[] words) {
@@ -36,19 +42,40 @@ public class Main {
 			}
 		});
 	}
-//	static void test1() {
-//		String filepath = "C:\\Users\\MJ Lee\\Desktop\\src\\java\\util\\concurrent";
-//		FileInfo fileInfo = Files.read(filepath, null);
-//		String[] words = fileInfo.words();
-//
-//		System.out.println("总行数：" + fileInfo.getLines());
-//		System.out.println("单词总数：" + words.length);
-//		System.out.println("-------------------------------------");
-//
-//		test1Map(new TreeMap<>(), words);
-//		test1Map(new HashMap<>(), words);
-//		test1Map(new LinkedHashMap<>(), words);
-//	}
+	static void test1() {
+		String filepath = "D:\\Java\\jdk1.8.0_221\\src\\org\\xml\\sax";
+		FileInfo fileInfo = Files.read(filepath, null);
+		String[] words = fileInfo.words();
+
+		System.out.println("总行数：" + fileInfo.getLines());
+		System.out.println("单词总数：" + words.length);
+		System.out.println("-------------------------------------");
+		
+		HashMap<Object, Integer> map = new HashMap<>();
+		Times.test(map.getClass().getName(), new Task() {
+			public void execute() {
+				for (String word : words) {
+					Integer count = map.get(word);
+					count = count == null ? 0 : count;
+					map.put(word, count + 1);
+				}
+				System.out.println(map.size()); // 17188
+				
+				int count = 0;
+				for (String word : words) {
+					Integer i = map.get(word);
+					count += i == null ? 0 : i;
+					map.remove(word);
+				}
+				Asserts.test(count == words.length);
+				Asserts.test(map.size() == 0);
+			}
+		});
+
+		test1Map(new TreeMap<>(), words);
+		test1Map(new HashMap<>(), words);
+		//test1Map(new LinkedHashMap<>(), words);
+	}
 	
 	static void test2(HashMap<Object, Integer> map) {
 		for (int i = 1; i <= 20; i++) {

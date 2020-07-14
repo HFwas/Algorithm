@@ -9,7 +9,7 @@ import com.mj.printer.BinaryTreeInfo;
 import com.mj.printer.BinaryTrees;
 
 @SuppressWarnings("unchecked")
-public class HashMap<K, V> implements Map<K, V> {
+public class HashMap_vo<K, V> implements Map<K, V> {
 	private static final boolean RED = false;
 	private static final boolean BLACK = true;
 	private static final int DEFAULT_CAPACITY = 1<<4;
@@ -17,7 +17,7 @@ public class HashMap<K, V> implements Map<K, V> {
 	private int size;
 	private Node<K, V>[] table;
 	
-	public HashMap() {
+	public HashMap_vo() {
 		table = new Node[DEFAULT_CAPACITY];
 	}
 	
@@ -60,7 +60,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		Node<K,V> parent = root;
 		int cmp = 0;
 		K k1 = key; 
-		int h1 = k1 == null ? 0 : k1.hashCode();
+		int h1 = hash(k1);
 		Node<K, V> result = null;
 		boolean search = false; //是否搜索过key
 		do{
@@ -74,10 +74,10 @@ public class HashMap<K, V> implements Map<K, V> {
 			}else if (Objects.equals(k1, k2)) {
 				cmp = 0;
 			}else if (k1 != null && k2 != null
-					&& k1.getClass() == k2.getClass()
 					&& k1 instanceof Comparable
+					&& k1.getClass() == k2.getClass()
 					&& (cmp = ((Comparable)k1).compareTo(k2)) != 0) {
-				//>0 <0 =0
+				((Comparable)k1).compareTo(k2);
 			}else if(search){//已经扫描过了
 				cmp = System.identityHashCode(k1) - System.identityHashCode(k2);
 			}else { //search == false的情况,还没有扫描，然后根据内存地址大小决定左右
@@ -280,7 +280,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		return root == null ? null : node(root, key);
 	}
 	private Node<K, V> node(Node<K, V> node , K k1){
-		int h1 = k1 == null ? 0 : k1.hashCode();
+		int h1 = hash(k1);
 		//存储查找结果
 		Node<K, V> result = null;
 		int cmp = 0;
@@ -525,13 +525,15 @@ public class HashMap<K, V> implements Map<K, V> {
 	 * 根据key生成对应的索引（在桶数组中的位置）
 	 */
 	private int index(K key){
-		if(key == null) return 0;
-		int hash = key.hashCode();
-		hash = hash ^ (hash >>> 16);
-		return hash & (table.length - 1);
+		return hash(key) & (table.length - 1);
 	}
 	private int index(Node<K, V> node){
-		return (node.hash ^ (node.hash >>> 16)) & (table.length - 1);
+		return node.hash & (table.length - 1);
+	}
+	private int hash(K key){
+		if(key == null) return 0;
+		int hash = key.hashCode();
+		return hash ^ (hash >>> 16);
 	}
 	
 	private static class Node<K,V>{
@@ -546,7 +548,8 @@ public class HashMap<K, V> implements Map<K, V> {
 		public Node(K key,V value, Node<K,V> parent) {
 			this.key = key;
 			this.value = value;
-			this.hash = key == null ? 0 : key.hashCode();
+			int hash = key == null ? 0 : key.hashCode();
+			this.hash = hash ^ (hash >>> 16);
 			this.parent = parent;
 		}
 		public boolean isLeaf() { // 是否叶子节点

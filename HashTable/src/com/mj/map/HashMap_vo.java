@@ -77,7 +77,7 @@ public class HashMap_vo<K, V> implements Map<K, V> {
 					&& k1 instanceof Comparable
 					&& k1.getClass() == k2.getClass()
 					&& (cmp = ((Comparable)k1).compareTo(k2)) != 0) {
-				((Comparable)k1).compareTo(k2);
+				//((Comparable)k1).compareTo(k2);
 			}else if(search){//已经扫描过了
 				cmp = System.identityHashCode(k1) - System.identityHashCode(k2);
 			}else { //search == false的情况,还没有扫描，然后根据内存地址大小决定左右

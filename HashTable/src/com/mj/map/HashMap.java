@@ -1,6 +1,5 @@
 package com.mj.map;
 
-import java.awt.print.Printable;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
@@ -13,6 +12,7 @@ public class HashMap<K, V> implements Map<K, V> {
 	private static final boolean RED = false;
 	private static final boolean BLACK = true;
 	private static final int DEFAULT_CAPACITY = 1<<4;
+	private static final float DEFAULT_LOAD_FACTORY = 0.75f;
 	
 	private int size;
 	private Node<K, V>[] table;
@@ -42,6 +42,8 @@ public class HashMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V put(K key, V value) {
+		resize();
+		
 		int index = index(key);
 		//取出index位置的node节点
 		Node<K, V> root = table[index];
@@ -60,7 +62,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		Node<K,V> parent = root;
 		int cmp = 0;
 		K k1 = key; 
-		int h1 = k1 == null ? 0 : k1.hashCode();
+		int h1 = hash(k1);
 		Node<K, V> result = null;
 		boolean search = false; //是否搜索过key
 		do{
@@ -206,6 +208,93 @@ public class HashMap<K, V> implements Map<K, V> {
 		return ;
 	}
 	
+	private void resize(){
+		//装填因子<= 0.75
+		if(size / table.length > DEFAULT_LOAD_FACTORY) return ;
+		Node<K, V> []oldTable = table;
+		table = new Node[oldTable.length << 1];
+		size = 0;
+		
+		
+		Queue<Node<K, V>> queue = new LinkedList<>();
+		for (int i = 0; i < oldTable.length; i++) {
+			if(oldTable[i] == null) continue;
+			
+			queue.offer(oldTable[i]);
+			while (!queue.isEmpty()) {
+				Node<K, V> node = queue.poll();
+				
+				if (node.left != null) {
+					queue.offer(node.left);
+				}
+				if (node.right != null) {
+					queue.offer(node.right);
+				}
+				//挪动代码得放到最后边
+				moveNode(node);
+			}
+		}
+		
+	}
+	private void moveNode(Node<K, V> newNode){
+		//重置
+		newNode.parent = null;
+		newNode.left = null;
+		newNode.right = null;
+		
+		int index = index(newNode);
+		//取出index位置的node节点
+		Node<K, V> root = table[index];
+		if (root == null) {
+			root = newNode;
+			table[index] = root;
+			afterPut(root);
+			return;
+		}
+		
+		//添加新的节点到红黑树上
+		//添加的不是第一个节点
+		//找到父节点
+		Node<K,V> node = root;
+		Node<K,V> parent = root;
+		int cmp = 0;
+		K k1 = newNode.key; 
+		int h1 = newNode.hash;
+		do{
+			parent = node; // 父节点
+			K k2 = node.key;
+			int h2 = node.hash;
+			if (h1 > h2) {
+				cmp = 1;
+			}else if (h1 < h2) {
+				cmp = -1;
+			}else if (k1 != null && k2 != null
+					&& k1.getClass() == k2.getClass()
+					&& k1 instanceof Comparable
+					&& (cmp = ((Comparable)k1).compareTo(k2)) != 0) {
+				//>0 <0 =0
+			}else{
+				cmp = System.identityHashCode(k1) - System.identityHashCode(k2);
+			}
+			
+			
+			if (cmp > 0) {
+				node = node.right;
+			} else if (cmp < 0) {
+				node = node.left;
+			} 
+		}while(node != null);
+		
+		//看看插入到父节点那个位置
+		newNode.parent = parent;
+		if (cmp > 0) {
+			parent.right = newNode;
+		} else {
+			parent.left = newNode;
+		}
+		//新添加节点之后的处理
+		afterPut(newNode);
+	}
 	private V remove(Node<K, V> node) {
 		if(node == null) return null;
 		V oldValue = node.value;
@@ -280,7 +369,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		return root == null ? null : node(root, key);
 	}
 	private Node<K, V> node(Node<K, V> node , K k1){
-		int h1 = k1 == null ? 0 : k1.hashCode();
+		int h1 = hash(k1);
 		//存储查找结果
 		Node<K, V> result = null;
 		int cmp = 0;
@@ -525,13 +614,15 @@ public class HashMap<K, V> implements Map<K, V> {
 	 * 根据key生成对应的索引（在桶数组中的位置）
 	 */
 	private int index(K key){
-		if(key == null) return 0;
-		int hash = key.hashCode();
-		hash = hash ^ (hash >>> 16);
-		return hash & (table.length - 1);
+		return hash(key) & (table.length - 1);
 	}
 	private int index(Node<K, V> node){
-		return (node.hash ^ (node.hash >>> 16)) & (table.length - 1);
+		return node.hash & (table.length - 1);
+	}
+	private int hash(K key){
+		if(key == null) return 0;
+		int hash = key.hashCode();
+		return hash ^ (hash >>> 16);
 	}
 	
 	private static class Node<K,V>{
@@ -546,7 +637,8 @@ public class HashMap<K, V> implements Map<K, V> {
 		public Node(K key,V value, Node<K,V> parent) {
 			this.key = key;
 			this.value = value;
-			this.hash = key == null ? 0 : key.hashCode();
+			int hash = key == null ? 0 : key.hashCode();
+			this.hash = hash ^ (hash >>> 16);
 			this.parent = parent;
 		}
 		public boolean isLeaf() { // 是否叶子节点

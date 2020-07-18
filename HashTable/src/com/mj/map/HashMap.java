@@ -210,11 +210,9 @@ public class HashMap<K, V> implements Map<K, V> {
 	
 	private void resize(){
 		//装填因子<= 0.75
-		if(size / table.length > DEFAULT_LOAD_FACTORY) return ;
+		if(size / table.length <= DEFAULT_LOAD_FACTORY) return ;
 		Node<K, V> []oldTable = table;
 		table = new Node[oldTable.length << 1];
-		size = 0;
-		
 		
 		Queue<Node<K, V>> queue = new LinkedList<>();
 		for (int i = 0; i < oldTable.length; i++) {
@@ -241,6 +239,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		newNode.parent = null;
 		newNode.left = null;
 		newNode.right = null;
+		newNode.color = RED;
 		
 		int index = index(newNode);
 		//取出index位置的node节点

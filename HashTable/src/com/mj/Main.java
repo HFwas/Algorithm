@@ -19,6 +19,14 @@ public class Main {
 		test3(new HashMap<>());
 		test4(new HashMap<>());
 		test5(new HashMap<>());
+//		SubKey1 key1 = new SubKey1(1);
+//		SubKey2 key2 = new SubKey2(1);
+//		HashMap<Object, Object> map = new HashMap<>();
+//		map.put(key1, 10);
+//		map.put(key2, 20);
+		
+		// key1.equal(key2) // true
+		// key2.equal(key1) // false
 	}
 	
 	static void test1Map(Map<String, Integer> map, String[] words) {

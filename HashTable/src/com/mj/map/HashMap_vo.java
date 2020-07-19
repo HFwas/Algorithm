@@ -14,7 +14,7 @@ public class HashMap_vo<K, V> implements Map<K, V> {
 	private static final boolean BLACK = true;
 	private static final int DEFAULT_CAPACITY = 1<<4;
 	
-	private int size;
+	private int  size;
 	private Node<K, V>[] table;
 	
 	public HashMap_vo() {

@@ -14,7 +14,7 @@ public class HashMap<K, V> implements Map<K, V> {
 	private static final int DEFAULT_CAPACITY = 1<<4;
 	private static final float DEFAULT_LOAD_FACTORY = 0.75f;
 	
-	private int size;
+	private int  size;
 	private Node<K, V>[] table;
 	
 	public HashMap() {

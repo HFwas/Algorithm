@@ -48,10 +48,10 @@ public class HashMap<K, V> implements Map<K, V> {
 		//取出index位置的node节点
 		Node<K, V> root = table[index];
 		if (root == null) {
-			root = new Node<>(key, value, null);
+			root = createNode(key, value, null);
 			table[index] = root;
 			size++;
-			afterPut(root);
+			fixAfterPut(root);
 			return null;
 		}
 		
@@ -107,7 +107,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		}while(node != null);
 		
 		//看看插入到父节点那个位置
-		Node<K,V> newNode = new Node<>(key, value, parent);
+		Node<K,V> newNode = createNode(key, value, parent);
 		if (cmp > 0) {
 			parent.right = newNode;
 		} else {
@@ -116,7 +116,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		size++;
 		
 		//新添加节点之后的处理
-		afterPut(newNode);
+		fixAfterPut(newNode);
 		return null;
 
 	}
@@ -208,6 +208,13 @@ public class HashMap<K, V> implements Map<K, V> {
 		return ;
 	}
 	
+	protected Node<K, V> createNode(K key,V value, Node<K,V> parent) {
+		return new Node(key, value, parent);
+	}
+	protected void afterRemove(Node<K, V> willNode , Node<K, V> removeNode) {
+		
+	}
+	
 	private void resize(){
 		//装填因子<= 0.75
 		if(size / table.length <= DEFAULT_LOAD_FACTORY) return ;
@@ -247,7 +254,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		if (root == null) {
 			root = newNode;
 			table[index] = root;
-			afterPut(root);
+			fixAfterPut(root);
 			return;
 		}
 		
@@ -292,10 +299,12 @@ public class HashMap<K, V> implements Map<K, V> {
 			parent.left = newNode;
 		}
 		//新添加节点之后的处理
-		afterPut(newNode);
+		fixAfterPut(newNode);
 	}
-	private V remove(Node<K, V> node) {
+	protected V remove(Node<K, V> node) {
 		if(node == null) return null;
+		
+		Node<K, V> willNode = node;
 		V oldValue = node.value;
 		size--;
 		
@@ -326,12 +335,12 @@ public class HashMap<K, V> implements Map<K, V> {
 			}
 			
 			//删除节点之后的处理
-			afterRemove(replacement);
+			fixAfterRemove(replacement);
 		}else if (node.parent == null) {//node是叶子节点并且是根节点
 			table[index] = null;
 			
 			//删除节点之后的处理
-			afterRemove(node);
+			fixAfterRemove(node);
 		}else {//node是叶子节点但不是根节点
 			if (node == node.parent.left) {
 				node.parent.left = null;
@@ -340,8 +349,11 @@ public class HashMap<K, V> implements Map<K, V> {
 			}
 			
 			//删除节点之后的处理
-			afterRemove(node);
+			fixAfterRemove(node);
 		}
+		
+		//交给子类去处理
+		afterRemove(willNode , node);
 		return oldValue;
 	}
 	// 后继节点
@@ -424,7 +436,7 @@ public class HashMap<K, V> implements Map<K, V> {
 //		//e1为null，e2不为null
 //		return System.identityHashCode(e1) - System.identityHashCode(e2);
 //	}
-	private void afterRemove(Node<K, V> node) {
+	private void fixAfterRemove(Node<K, V> node) {
 		//如果删除的节点是红色，直接返回即可
 		//if (isRed(node))  return ;
 		//用户取代node子节点的节点时红色  或者用以取代删除节点的子节点是红色
@@ -458,7 +470,7 @@ public class HashMap<K, V> implements Map<K, V> {
 				black(parent);
 				red(sibling);
 				if (parentBlack) {
-					afterRemove(parent);
+					fixAfterRemove(parent);
 				}
 			}else {//兄弟节点至少有一个是红色节点,向兄弟节点借元素
 				//兄弟节点的左边是黑色，兄弟要旋转
@@ -488,7 +500,7 @@ public class HashMap<K, V> implements Map<K, V> {
 				black(parent);
 				red(sibling);
 				if (parentBlack) {
-					afterRemove(parent);
+					fixAfterRemove(parent);
 				}
 			}else {//兄弟节点至少有一个是红色节点,向兄弟节点借元素
 				//兄弟节点的左边是黑色，兄弟要旋转
@@ -505,7 +517,7 @@ public class HashMap<K, V> implements Map<K, V> {
 			
 		}
 	}
-	private void afterPut(Node<K, V> node){
+	private void fixAfterPut(Node<K, V> node){
 		Node<K,V> parent = node.parent;
 		
 		//添加的是根节点或者上溢到达的根节点
@@ -523,7 +535,7 @@ public class HashMap<K, V> implements Map<K, V> {
 			black(parent);
 			black(uncle);
 			//把祖父节点当作新添加的节点
-			afterPut(grand);
+			fixAfterPut(grand);
 			return;
 		}
 		
@@ -624,7 +636,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		return hash ^ (hash >>> 16);
 	}
 	
-	private static class Node<K,V>{
+	protected static class Node<K,V>{
 		int hash;
 		K key;
 		V value;

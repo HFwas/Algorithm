@@ -4,6 +4,7 @@ import com.mj.Times.Task;
 import com.mj.file.FileInfo;
 import com.mj.file.Files;
 import com.mj.map.HashMap;
+import com.mj.map.LinkedHashMap;
 import com.mj.map.Map;
 import com.mj.map.Map.Visitor;
 import com.mj.map.TreeMap;
@@ -14,19 +15,26 @@ import com.mj.model.SubKey2;
 
 public class Main {
 	public static void main(String[] args) {
-		test1();
-		test2(new HashMap<>());
-		test3(new HashMap<>());
-		test4(new HashMap<>());
-		test5(new HashMap<>());
+
+		test4(new LinkedHashMap<>());
+		
+		
+		//		test1();
+//		test2(new HashMap<>());
+//		test3(new HashMap<>());
+
+//		test4(new HashMap<>());
+		
+		
+//		test5(new HashMap<>());
 //		SubKey1 key1 = new SubKey1(1);
 //		SubKey2 key2 = new SubKey2(1);
 //		HashMap<Object, Object> map = new HashMap<>();
 //		map.put(key1, 10);
 //		map.put(key2, 20);
-		
-		// key1.equal(key2) // true
-		// key2.equal(key1) // false
+//		
+//		key2.equals(key1); // false
+//		key1.equals(key2); // true
 	}
 	
 	static void test1Map(Map<String, Integer> map, String[] words) {
@@ -127,7 +135,7 @@ public class Main {
 		map.put("jim", 3);
 		map.put("jake", 4);		
 		map.remove("jack");
-		map.remove("jim");
+//		map.remove("jim");
 		for (int i = 1; i <= 10; i++) {
 			map.put("test" + i, i);
 			map.put(new Key(i), i);
@@ -138,7 +146,7 @@ public class Main {
 		for (int i = 1; i <= 3; i++) {
 			map.put(new Key(i), i + 5);
 		}
-		Asserts.test(map.size() == 19);
+		Asserts.test(map.size() == 20);
 		Asserts.test(map.get(new Key(1)) == 6);
 		Asserts.test(map.get(new Key(2)) == 7);
 		Asserts.test(map.get(new Key(3)) == 8);

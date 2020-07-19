@@ -16,7 +16,6 @@ public class HashSet<E> implements Set<E> {
 	public boolean isEmpty() {
 		return map.isEmpty();
 	}
-
 	@Override
 	public void claer() {
 		map.clear();

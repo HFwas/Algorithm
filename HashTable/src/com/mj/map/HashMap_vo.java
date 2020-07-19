@@ -20,7 +20,6 @@ public class HashMap_vo<K, V> implements Map<K, V> {
 	public HashMap_vo() {
 		table = new Node[DEFAULT_CAPACITY];
 	}
-	
 	@Override
 	public int size() {
 		return size;

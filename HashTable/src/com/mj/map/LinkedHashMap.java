@@ -15,7 +15,6 @@ public class LinkedHashMap<K, V> extends HashMap<K, V>{
 		first = null;
 		last = null;
 	}
-	
 	@Override
 	public boolean containsValue(V value) {
 		LinkNode<K, V> node = first;

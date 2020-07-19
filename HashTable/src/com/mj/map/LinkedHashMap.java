@@ -14,7 +14,6 @@ public class LinkedHashMap<K, V> extends HashMap<K, V>{
 		super.clear();
 		first = null;
 		last = null;
-	
 	}
 	
 	@Override

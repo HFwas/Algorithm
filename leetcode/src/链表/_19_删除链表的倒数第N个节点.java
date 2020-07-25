@@ -1,4 +1,6 @@
 package 链表;
+
+
 /**
  * https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/
  * @author Administrator
@@ -9,15 +11,26 @@ package 链表;
  */
 public class _19_删除链表的倒数第N个节点 {
 	public ListNode removeNthFromEnd(ListNode head, int n) {
-		if(head.next == null) return null;
-		while (head.next != null) {
-			for (int i = 0; i < 10; i++) {
-				
-			}
-			
+		if(head == null || n <= 0) return head;
+		ListNode node = new ListNode(-1);
+		node.next = head;
+		ListNode cur = node;
+		int sum = 0;
+		while (cur.next != null) {
+			cur = cur.next;
+			sum++;
+		}
+		if (sum < n) {
+			return head;
 		}
 		
-		
-		return head; 
+		int num = sum - n;
+		cur = node;
+		while (num > 0) {
+			cur = cur.next;
+			num--;
+		}
+		cur.next = cur.next.next;
+		return node.next; 
     }
 }

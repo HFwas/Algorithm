@@ -1,11 +1,10 @@
 package 链表;
 /**
- * 
+ * https://leetcode-cn.com/problems/delete-node-in-a-linked-list/
  * @author Administrator
- *
+ *输入: head = [4,5,1,9], node = 5     输出: [4,1,9]
  */
 public class _237_删除链表中的节点 {
-	
 	public void deleteNode(ListNode node) {
         node.val = node.next.val;
         node.next = node.next.next;

@@ -6,13 +6,16 @@ package 链表;
  */
 public class _剑指Offer18_删除链表的节点 {
 	public ListNode deleteNode(ListNode head, int val) {
-		
-		
-		
-		
-		
-		
-		
-		 return head;
+		if(head == null) return null;
+		if(head.val == val) return head.next;
+		ListNode pre = head, cur = head.next;
+		while (cur != null && cur.val != val) {
+			pre = cur;
+			cur = cur.next;
+		}
+		if (cur != null) {
+			pre.next = cur.next;
+		}
+		return head;
     }
 }

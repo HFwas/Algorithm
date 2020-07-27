@@ -6,11 +6,15 @@ package 链表;
  */
 public class _328_奇偶链表 {
 	public ListNode oddEvenList(ListNode head) {
-		ListNode pre = head, cur = head;
-		while (cur != null) {
-			
+		if(head == null) return null;
+		ListNode pre = head, cur = head.next, temp = cur;
+		while (cur != null && cur.next != null) {
+			pre.next = cur.next;
+			pre = pre.next;
+			cur.next = pre.next;
+			cur = cur.next;
 		}
-		
+		pre.next = temp;
 		return head;
 	}
 	

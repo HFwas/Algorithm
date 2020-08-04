@@ -1,0 +1,19 @@
+package com.mj.sort;
+
+public class SelectionSort extends Sort{
+
+	@Override
+	protected void sort() {
+		for (int end = array.length - 1; end > 0; end--) {
+			int maxIndex = 0;
+			for (int begin = 1; begin <= end; begin++) {
+				//if (array[maxIndex] <= array[begin]) {
+				if (cmp(maxIndex, end) <= 0) {
+					maxIndex = begin;
+				}
+			}
+			swap(maxIndex, end);
+		}
+	}
+
+}

@@ -1,12 +1,12 @@
 package com.mj.sort;
 
-public class BubbleSort2 extends Sort{
+public class BubbleSort2<E extends Comparable<E>> extends Sort<E>{
 	
 	@Override
 	protected void sort() {
-		for (int end = array.length; end > 0; end--) {
+		for (int end = array.length - 1; end > 0; end--) {
 			boolean sorted = true;
-			for (int begin = 1; begin < end; begin++) {
+			for (int begin = 1; begin <= end; begin++) {
 //				if (array[begin] < array[begin - 1]) {
 //					int temp = array[begin];
 //					array[begin] = array[begin - 1];

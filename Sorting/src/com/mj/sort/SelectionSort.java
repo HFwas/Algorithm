@@ -1,6 +1,6 @@
 package com.mj.sort;
 
-public class SelectionSort extends Sort{
+public class SelectionSort<E extends Comparable<E>> extends Sort<E>{
 
 	@Override
 	protected void sort() {

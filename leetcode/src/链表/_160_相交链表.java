@@ -13,6 +13,10 @@ public class _160_相交链表 {
 		while (pA != pB) {
 			pA = (pA == null) ? headB : pA.next;
 			pB = (pB == null) ? headA : pB.next;
+			
+			//这段代码在两个链表在不相交的时候会死循环
+			//pA = (pA == null) ? headB : pA.next;
+			//pB = (pB == null) ? headA : pB.next;
 		}
 		return pA;
     }

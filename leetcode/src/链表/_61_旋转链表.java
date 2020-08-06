@@ -38,14 +38,12 @@ public class _61_旋转链表 {
              two=two.next;
         }
         int h=k%length;//取模之后，不管k是大于还是小于length都可以得到head是倒数第几位
-        if(h==0)
-        {return head;}
+        if(h==0) {return head;}
         //定义两个辅助指针，指向需要断链的前一位和断链的位置
         ListNode one=head;
         
         int cs=length-h-1;//forfor循环指向断链位置的前一位
-        for(int a=1;a<=cs;a++)
-        {
+        for(int a=1;a<=cs;a++){
             one=one.next;
         }
         ListNode newHead=one.next;

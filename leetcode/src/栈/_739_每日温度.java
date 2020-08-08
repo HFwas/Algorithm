@@ -55,7 +55,7 @@ public class _739_每日温度 {
     public int[] dailyTemperatures2(int[] T) {
     	if (T == null || T.length == 0) return null;
     	int[] result = new int[T.length];
-    	Stack<Integer> stack = new Stack<>();
+    	Stack<Integer> stack  = new Stack<>();
     	for (int i = 0; i < T.length; i++) {
     		// 这里应该要写大于，不要写大于等于
 			while (!stack.isEmpty() && T[i] > T[stack.peek()]) {

@@ -11,7 +11,7 @@ public class ShellSort<T extends Comparable<T>> extends Sort<T> {
 
 	@Override
 	protected void sort() {
-		List<Integer> stepSequence = sedgewickStepSequence();
+		List<Integer> stepSequence = shellStepSequence();
 		for (Integer step : stepSequence) {
 			sort(step);
 		}

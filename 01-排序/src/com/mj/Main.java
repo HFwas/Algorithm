@@ -20,7 +20,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		//Integer[] array = {7, 3, 5, 8, 6, 7, 4, 5};
-		Integer[] array = Integers.random(10000, 1, 20000);
+		Integer[] array = Integers.random(50000, 1, 50000);
 		testSorts(array, 
 //				new RadixSort()
 //				new InsertionSort1(),

@@ -8,10 +8,16 @@ package 数组;
  */
 public class _53_最大子序和 {
 	public int maxSubArray(int[] nums) {
-		
-		
-		
-		
-		return 0;
+        int ans = nums[0];
+        int sum = 0;
+        for(int num: nums) {
+            if(sum > 0) {
+                sum += num;
+            } else {
+                sum = num;
+            }
+            ans = Math.max(ans, sum);
+        }
+        return ans;
     }
 }

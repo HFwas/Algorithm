@@ -1,4 +1,8 @@
 package 字符串;
+
+import java.util.HashMap;
+import java.util.Vector;
+
 /**
  * https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/comments/
  * @author Administrator
@@ -22,7 +26,7 @@ public class _3_无重复字符的最长子串 {
             res   = Math.max(res, i - start + 1);
             last[index] = i;
         }
-
         return res;
+        
     }
 }

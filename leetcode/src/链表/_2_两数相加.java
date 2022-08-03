@@ -1,4 +1,5 @@
 package 链表;
+
 /**
  * https://leetcode-cn.com/problems/add-two-numbers/
  * @author Administrator
@@ -7,7 +8,7 @@ package 链表;
 原因：342 + 465 = 807
  */
 public class _2_两数相加 {
-	public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+	public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 		ListNode node = new ListNode(0);
 		ListNode cur = node;
 		int jinwei = 0;
@@ -32,4 +33,12 @@ public class _2_两数相加 {
 		}
 		return node.next;
     }
+
+
+	public static void main(String[] args) {
+		ListNode listNode1 = new ListNode(2, new ListNode(4, new ListNode(3, null)));
+		ListNode listNode2 = new ListNode(5, new ListNode(6, new ListNode(4, null)));
+		ListNode listNode = addTwoNumbers(listNode1, listNode2);
+		System.out.println(listNode.toString());
+	}
 }	

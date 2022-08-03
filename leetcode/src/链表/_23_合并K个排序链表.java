@@ -23,15 +23,12 @@ public class _23_合并K个排序链表 {
 		if(l2 == null) return l1;
 		ListNode dummyNode = new ListNode(0);
  		ListNode cur = dummyNode;
- 		if (l1.val < l2.val) {
+ 		if (l1.val <= l2.val) {
 			l1.next = l2;
 			l1 = l1.next;
 		}else {
 			
 		}
-		
-		
-		
 		return null;
 	}
 }

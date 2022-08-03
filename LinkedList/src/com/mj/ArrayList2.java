@@ -33,7 +33,6 @@ public class ArrayList2<E> extends AbstractList<E>{
 	/**
 	 * 获取index位置的元素
 	 * @param index
-	 * @param element
 	 * @return 原来的元素ֵ
 	 */
 	public E get(int index){

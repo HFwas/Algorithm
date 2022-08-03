@@ -1,7 +1,6 @@
 package com.mj.single;
 
 import com.mj.AbstractList;
-import com.sun.javafx.sg.prism.NGShape.Mode;
 
 public class SingleLinkedList<E> extends AbstractList<E> {
 	private Node<E> first;
@@ -27,6 +26,13 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 		return node(index).element;//
 	}
 
+	/**
+	 * 替换指定位置的元素内容
+	 *
+	 * @param index 元素索引
+	 * @param element 元素内容
+	 * @return
+	 */
 	@Override
 	public E set(int index, E element) {
 		Node<E> node = node(index);
@@ -35,6 +41,12 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 		return old;
 	}
 
+	/**
+	 * 删除指定位置的元素
+	 *
+	 * @param index 元素索引
+	 * @return
+	 */
 	@Override
 	public E remove(int index) {
 		rangeCheck(index);
@@ -44,6 +56,7 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 			first = first.next;
 		} else {
 			Node<E> prev = node(index - 1);
+			// 保存被删除的元素
 			node = prev.next;
 			prev.next = node.next;
 		}
@@ -52,7 +65,10 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 	}
 
 	/**
-	 * 
+	 * 添加元素，覆盖抽象类方法
+	 *
+	 * @param index 添加位置
+	 * @param element 添加元素
 	 */
 	@Override
 	public void add(int index, E element) {

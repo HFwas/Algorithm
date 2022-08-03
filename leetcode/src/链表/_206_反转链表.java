@@ -7,12 +7,13 @@ package 链表;
  */
 public class _206_反转链表 {
 	//递归
-	public ListNode reverseList(ListNode head) {
+	public static ListNode reverseList(ListNode head) {
 		if (head == null) return null;
 		if (head.next == null)  return head;
+		// 传入的是 2
 		ListNode newhead = reverseList(head.next);
-		head.next.next = head.next;
-		head.next = null ;
+		head.next.next = head;
+		head.next = null;
 		return newhead;
     }
 	//
@@ -28,5 +29,11 @@ public class _206_反转链表 {
 		}
 		return newHead;
     }
+
+	public static void main(String[] args) {
+		ListNode node = new ListNode(1, new ListNode(2, new ListNode(3, null)));
+		ListNode listNode = reverseList(node);
+		System.out.println(listNode.toString());
+	}
 	
 }

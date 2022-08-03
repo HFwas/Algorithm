@@ -3,8 +3,6 @@ import com.mj.AbstractList;
 /**
  * 增加一个虚拟头结点
  */
-import com.sun.javafx.sg.prism.NGShape.Mode;
-
 public class SingleLinkedList2<E> extends AbstractList<E> {
 	private Node<E> first;
 

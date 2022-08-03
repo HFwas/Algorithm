@@ -31,8 +31,23 @@ public class Main {
         }
         return second;
     }
+    private static int fib3(int n){
+        if (n <= 1) return n;
+        int first = 0;
+        int second = 1;
+        // 省略多余变量
+        for (int i = 0; i < n - 1; i++){
+            second = first + second;
+            first = second - first;
+        }
+        return second;
+    }
 
     public static void main(String[] args) {
+        // 省略多余变量
+        // 0 1 2 3 5 8
+        int fib3 = fib3(6);
+
         int n = 52;
         Times.test("fib1", new Times.Task() {
             @Override

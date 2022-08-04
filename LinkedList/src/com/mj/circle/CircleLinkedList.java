@@ -100,13 +100,14 @@ public class CircleLinkedList<E> extends AbstractList<E> {
 			Node<E> next = node.next;
 			prev.next = next;
 			next.prev = prev;
-			
+
+			// 如果删除0位置的节点，first指向自身
 			if (node == first) {// index==0    index == 0
 				first = next;
-			} 
+			}
 			if (node == last) {// index = size-1
 				last = prev;
-			} 
+			}
 		}
 
 		size--;
@@ -135,7 +136,8 @@ public class CircleLinkedList<E> extends AbstractList<E> {
 			next.prev = node;
 			prev.next = node;
 
-			if (index == 0) {
+//			if (index == 0) {
+			if (first == next) {
 				first = node;
 			} 
 		}

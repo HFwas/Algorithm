@@ -27,6 +27,7 @@ public class Main {
 		System.out.println(list);
 	}
 
+	// 约瑟夫问题
 	static void josephus(){
 		CircleLinkedList<Object> list = new CircleLinkedList<>();
 		

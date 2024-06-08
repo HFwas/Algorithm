@@ -1,7 +1,5 @@
 package 数组;
 
-import sun.security.util.Length;
-
 /**
  * https://leetcode-cn.com/problems/rotate-array/
  * @author Administrator
